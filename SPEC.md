@@ -94,7 +94,7 @@ Pass 1 flips vertex 1. The cut is 5, because the weight-10 edge is cut and the w
 This run was compiled and executed with the Visual Studio 2026 Build Tools compiler. From `c:\quant` in PowerShell:
 
 ```powershell
-cmd /c 'call "C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cl /nologo /EHsc /std:c++17 /Fo:%TEMP%\ /Fe:%TEMP%\ising.exe C:\quant\model\ising.cpp && %TEMP%\ising.exe'
+cmd /c 'call "C:\Program Files (x86)\Microsoft Visual Studio\18\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && cl /nologo /EHsc /std:c++17 /Fo:C:\quant\ /Fe:C:\quant\ising.exe C:\quant\model\ising.cpp && C:\quant\ising.exe'
 ```
 
 `g++ -std=c++17 -o ising.exe model/ising.cpp` is the same check where `g++` is on the path. Any line that differs from the block above is a failed run.

@@ -1,8 +1,12 @@
+#include <vector>
+#include <utility>
+#include <iostream>
+
 struct Graph {
     int n; 
     std::vector<int> spin; 
     std::vector<std::vector<std::pair<int, int>>> adj; 
-}
+};
 
 int cut (const Graph& graph) {
     int total = 0; 
@@ -22,12 +26,12 @@ int cut (const Graph& graph) {
 }
 
 /*
- * Energy change from flipping the spin at vertex i.
- * Each edge adds weight * the neighbor's spin. The return multiplies
- * that sum by -spin[i]. A negative return lowers the energy and raises
- * the cut, so the flip is kept. Zero leaves the cut unchanged and is kept.
- * A positive return raises the energy. That uphill flip can still be
- * accepted while the temperature is high.
+ * Energy change from flipping spin at a vertex.
+ * Each edge adds weight * the neighbor's spin. 
+ * A negative return implies that the flip would lower the energy and 
+ * raise the cut, so the flip is kept. This is the downhill flip. 
+ * A positive return raises the energy/decreases the cut. That uphill flip
+ * can still be accepted while the temperature is high.
  */
 
 int change_energy (const Graph& graph, int i) { 
@@ -40,4 +44,20 @@ int change_energy (const Graph& graph, int i) {
     }
 
     return -graph.spin[i] * field;
+}
+
+// create n vertices, each with spin +1, no edges (cut = 0)
+
+Graph make_graph(int n) {
+    Graph graph;
+    graph.n = n; 
+    graph.spin.assign(n, +1);
+    graph.adj.assign(n, {});
+    return graph;
+}
+
+// a belongs to b, and vice versa (neighboring vertices)
+void add_edge(Graph &graph, int a, int b, int weight) {
+    graph.adj[a].push_back({b, weight});
+    graph.adj[b].push_back({a, weight});
 }

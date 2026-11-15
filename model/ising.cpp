@@ -111,5 +111,18 @@ int main() {
     Graph graph = make_graph(3);
     add_edge(graph, 0, 1, -5);
     add_edge(graph, 1, 2, 10);
+    std::cout << "path\n";
     sweep(graph);
+
+    Graph example = make_graph(7);
+    add_edge(example, 0, 1, -2);
+    add_edge(example, 0, 2, 2);
+    add_edge(example, 1, 3, 7);
+    add_edge(example, 2, 3, 8);
+    add_edge(example, 2, 4, 1);
+    add_edge(example, 2, 6, -1);
+    add_edge(example, 3, 4, -1);
+    add_edge(example, 3, 5, 2);
+    std::cout << "example\n";
+    sweep(example);
 }

@@ -1,3 +1,9 @@
+struct Graph {
+    int n; 
+    std::vector<int> spin; 
+    std::vector<std::vector<std::pair<int, int>>> adj; 
+}
+
 int cut (const Graph& graph) {
     int total = 0; 
 

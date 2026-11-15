@@ -20,3 +20,24 @@ int cut (const Graph& graph) {
     }
     return total; 
 }
+
+/*
+ * Energy change from flipping the spin at vertex i.
+ * Each edge adds weight * the neighbor's spin. The return multiplies
+ * that sum by -spin[i]. A negative return lowers the energy and raises
+ * the cut, so the flip is kept. Zero leaves the cut unchanged and is kept.
+ * A positive return raises the energy. That uphill flip can still be
+ * accepted while the temperature is high.
+ */
+
+int change_energy (const Graph& graph, int i) { 
+    int field = 0; 
+
+    for (const auto& edge : graph.adj[i]) {
+        int v = edge.first; 
+        int w = edge.second; 
+        field += w * graph.spin[v];
+    }
+
+    return -graph.spin[i] * field;
+}

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <utility>
 #include <vector>
+#include <cmath>
+#include <cstdint>
 
 struct Graph {
     int n;
@@ -125,4 +127,14 @@ int main() {
     add_edge(example, 3, 5, 2);
     std::cout << "example\n";
     sweep(example);
+
+    Graph trap = make_graph(4);
+    add_edge(trap, 0, 1, 3);
+    add_edge(trap, 2, 3, 3);
+    add_edge(trap, 0, 2, 2);
+    add_edge(trap, 0, 3, 2);
+    add_edge(trap, 1, 2, 2);
+    add_edge(trap, 1, 3, 2);
+    std::cout << "trap\n";
+    sweep(trap);
 }

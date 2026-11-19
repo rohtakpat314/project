@@ -70,25 +70,55 @@ void print_spins(const Graph& graph) {
     }
 }
 
+uint32_t draw_state = 1; // start at 1, stay in mem between calls 
+
+double unit_draw() {
+    draw_state ^= draw_state << 13; // copy LS 13, write back a 1 wherever the copy and original differ
+    draw_state ^= draw_state >> 17; // RS 17, write back a 1 wherever the copy and original differ
+    draw_state ^= draw_state << 5; // LS 5, write back a 1 wherever the copy and original differ
+    return (draw_state & 0xffffff) / 16777216.0;
+}
+
+int hottest(const Graph& graph) { // find the max weight of any edge
+    int scale = 1;
+    for (int i = 0; i < graph.n; i++) {
+        for (const auto& edge : graph.adj[i]) {
+            int w = edge.second;
+            if (w < 0) {
+                w = -w;
+            }
+            if (w > scale) {
+                scale = w;
+            }
+        }
+    }
+    return scale;
+}
+
 // Repeat a pass over every vertex until one pass flips nothing.
 // A negative return flips that spin. Zero and positive returns stay.
 void sweep(Graph& graph) {
     int best = cut(graph);
     std::vector<int> best_spin = graph.spin;
-    bool changed = true;
+    double temperature = 3.0 * hottest(graph);
     int pass = 1;
 
-    while (changed) {
-        changed = false;
-        std::cout << "pass " << pass << "\n";
+    while (temperature > 0.05) {
+        std::cout << "pass " << pass << " temperature " << temperature << "\n";
 
         for (int i = 0; i < graph.n; i++) {
             int delta = change_energy(graph, i);
             std::cout << "vertex " << i << " return " << delta;
 
+            bool keep = false;
             if (delta < 0) {
+                keep = true;
+            } else if (delta > 0) {
+                keep = unit_draw() < std::exp(-delta / temperature);
+            }
+
+            if (keep) {
                 graph.spin[i] = -graph.spin[i];
-                changed = true;
                 int now = cut(graph);
                 if (now > best) {
                     best = now;
@@ -102,11 +132,14 @@ void sweep(Graph& graph) {
             std::cout << " cut " << cut(graph) << "\n";
         }
 
+        temperature *= 0.96;
         pass += 1;
     }
 
     graph.spin = best_spin;
-    std::cout << "stop\n";
+    std::cout << "stop spins";
+    print_spins(graph);
+    std::cout << " cut " << cut(graph) << "\n";
 }
 
 int main() {
